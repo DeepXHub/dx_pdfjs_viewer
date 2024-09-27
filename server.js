@@ -5,7 +5,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Regex to allow any subdomain of deepxhub.com, including multi-level subdomains
+// Regex to allow any subdomain of deepxhub.com
 const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$/;
 
 // List of specific allowed origins
@@ -27,7 +27,7 @@ app.use((req, res, next) => {
         next();
     } else {
         console.error(`CORS error: Incoming origin ${origin} not allowed.`);
-        res.sendStatus(444); // Return 444 status code for disallowed origins
+        res.sendStatus(403); // Return 403 status code for disallowed origins
     }
 });
 
@@ -36,18 +36,17 @@ app.use((req, res, next) => {
     const clientIp = req.ip;
     const referrer = req.get('Referrer') || 'No referrer';
     console.log(`[dx-pdfjs-viewer] GET request made to: ${req.path} from IP: ${clientIp}, Referrer: ${referrer}`);
+    console.log(`[dx-pdfjs-viewer] Full request URL: ${req.protocol}://${req.get('host')}${req.originalUrl}`);
     next();
 });
 
 // Serve static files with correct MIME types
 app.use((req, res, next) => {
     const fileExtension = path.extname(req.path);
-
     // Handle .mjs files with the correct MIME type
     if (fileExtension === ".mjs") {
         res.setHeader("Content-Type", "application/javascript");
     }
-
     next();
 });
 
@@ -61,6 +60,6 @@ app.get("/hidden-reader/", (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
