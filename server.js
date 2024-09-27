@@ -11,7 +11,8 @@ const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)?deepxhub\.com$/;
 
 // List of specific allowed origins
 const allowedOrigins = [
-    'https://dx-pdfjs-viewer-e82kw.ondigitalocean.app'
+    'https://dx-pdfjs-viewer-e82kw.ondigitalocean.app',
+    'http://localhost:3000'
     // Add more domains as needed
 ];
 
