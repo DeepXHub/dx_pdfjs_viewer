@@ -6,32 +6,36 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// CORS options
-// Allow requests from deepxhub.com subdomains
-const corsOptions = {
-    origin: function (origin, callback) {
-        console.log('Incoming origin:', origin); // Log the incoming origin
-        if (!origin || /^https?:\/\/([^.]+\.)*deepxhub\.com$/.test(origin)) {
-            callback(null, true); // Allow request
-        } else {
-            callback(new Error('Not allowed by CORS')); // Reject request
-        }
-    },
-};
+// Regex to allow any subdomain of deepxhub.com
+const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)?deepxhub\.com$/;
 
-app.use(cors(corsOptions));
-// Allow all CORS requests
-// app.use(cors());
+// List of specific allowed origins
+const allowedOrigins = [
+    'https://dx-pdfjs-viewer-e82kw.ondigitalocean.app'
+    // Add more domains as needed
+];
 
-// Use CORS with our settings
-app.use(cors(corsOptions));
-
-// Logging incoming requests to the console
+// CORS middleware to handle origin checking
 app.use((req, res, next) => {
-    const clientIP = req.ip || req.connection.remoteAddress; // Get client IP address
-    const referrer = req.get('Referrer') || req.get('Referer') || 'No referrer'; // Get referrer
+    const origin = req.headers.origin;
 
-    console.log(`${req.method} request made to: ${req.url} from IP: ${clientIP}, Referrer: ${referrer}`);
+    // Check if the incoming origin matches the allowed pattern or is in the allowedOrigins list
+    const isAllowed = allowedOrigins.includes(origin) || allowedOriginPattern.test(origin);
+
+    if (isAllowed) {
+        res.setHeader("Access-Control-Allow-Origin", origin);
+        next();
+    } else {
+        console.error(`CORS error: Incoming origin ${origin} not allowed.`);
+        res.sendStatus(444); // Return 444 status code for disallowed origins
+    }
+});
+
+// Middleware to log incoming requests
+app.use((req, res, next) => {
+    const clientIp = req.ip;
+    const referrer = req.get('Referrer') || 'No referrer';
+    console.log(`[dx-pdfjs-viewer] GET request made to: ${req.path} from IP: ${clientIp}, Referrer: ${referrer}`);
     next();
 });
 
