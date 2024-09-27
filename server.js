@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 10000;
 // CORS options
 const corsOptions = {
     origin: function (origin, callback) {
+        console.log('Incoming origin:', origin); // Log the incoming origin
         // Allow requests from deepxhub.com subdomains
         if (!origin || /^https?:\/\/([^.]+\.|)deepxhub\.com$/.test(origin)) {
             callback(null, true); // Allow request
@@ -17,6 +18,9 @@ const corsOptions = {
         }
     },
 };
+
+// Allow all CORS requests
+// app.use(cors());
 
 // Use CORS with our settings
 app.use(cors(corsOptions));
