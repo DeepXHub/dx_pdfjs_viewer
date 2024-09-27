@@ -1,13 +1,12 @@
 const express = require("express");
 const path = require("path");
-const cors = require("cors");
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Regex to allow any subdomain of deepxhub.com
-const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)?deepxhub\.com$/;
+// Regex to allow any subdomain of deepxhub.com, including multi-level subdomains
+const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$/;
 
 // List of specific allowed origins
 const allowedOrigins = [
