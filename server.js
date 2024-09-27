@@ -6,10 +6,12 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // Regex to allow any subdomain of deepxhub.com
-const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$|^https:\/\/dx-pdfjs-viewer-e82kw\.ondigitalocean\.app$/;
+const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$/;
 
 // List of specific allowed origins
 const allowedOrigins = [
+    'https://dx-pdfjs-viewer-e82kw.ondigitalocean.app',
+    'http://dx-pdfjs-viewer-e82kw.ondigitalocean.app',
     'http://localhost:3000'
     // Add more domains as needed
 ];
