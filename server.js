@@ -23,7 +23,10 @@ app.use(cors(corsOptions));
 
 // Logging incoming requests to the console
 app.use((req, res, next) => {
-    console.log(`${req.method} request made to: ${req.url}`);
+    const clientIP = req.ip || req.connection.remoteAddress; // Get client IP address
+    const referrer = req.get('Referrer') || req.get('Referer') || 'No referrer'; // Get referrer
+
+    console.log(`${req.method} request made to: ${req.url} from IP: ${clientIP}, Referrer: ${referrer}`);
     next();
 });
 
