@@ -7,11 +7,11 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // CORS options
+// Allow requests from deepxhub.com subdomains
 const corsOptions = {
     origin: function (origin, callback) {
         console.log('Incoming origin:', origin); // Log the incoming origin
-        // Allow requests from deepxhub.com subdomains
-        if (!origin || /^https?:\/\/([^.]+\.|)deepxhub\.com$/.test(origin)) {
+        if (!origin || /^https?:\/\/([^.]+\.)*deepxhub\.com$/.test(origin)) {
             callback(null, true); // Allow request
         } else {
             callback(new Error('Not allowed by CORS')); // Reject request
@@ -19,6 +19,7 @@ const corsOptions = {
     },
 };
 
+app.use(cors(corsOptions));
 // Allow all CORS requests
 // app.use(cors());
 
