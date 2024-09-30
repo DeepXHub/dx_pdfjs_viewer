@@ -5,52 +5,6 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Regex to allow any subdomain of deepxhub.com
-const allowedOriginPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$/;
-
-// Regex to check referer from deepxhub.com
-const allowedRefererPattern = /^https:\/\/([a-z0-9-]+\.)*deepxhub\.com$/;
-
-// List of specific allowed origins
-const allowedOrigins = [
-    'https://dx-pdfjs-viewer-e82kw.ondigitalocean.app',
-    'http://localhost:3000'
-    // Add more domains as needed
-];
-
-// CORS middleware to handle origin checking
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    const referrer = req.get('referer') || '';
-
-    // Log the origin and referrer
-    console.log(`[dx-pdfjs-viewer] Incoming request from Origin: ${origin || 'undefined'}, Referrer: ${referrer}`);
-
-    // If referer matches allowed pattern, skip CORS check
-    if (allowedRefererPattern.test(referrer)) {
-        console.log(`[dx-pdfjs-viewer] Referer ${referrer} matched allowed pattern. Skipping CORS check.`);
-        res.setHeader("Access-Control-Allow-Origin", referrer); // Allow based on referer if origin is undefined
-        return next(); // Skip CORS check and continue to the next middleware
-    }
-
-    // If origin is undefined, log an error and return 401
-    if (!origin) {
-        console.error(`[dx-pdfjs-viewer] CORS error: Incoming origin undefined. Referrer check failed.`);
-        return res.sendStatus(401); // Return 401 status code for undefined origin and no referer match
-    }
-
-    // Check if the incoming origin matches the allowed pattern or is in the allowedOrigins list
-    const isAllowed = allowedOrigins.includes(origin) || allowedOriginPattern.test(origin);
-
-    if (isAllowed) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-        next();
-    } else {
-        console.error(`[dx-pdfjs-viewer] CORS error: Incoming origin ${origin} not allowed.`);
-        res.sendStatus(401); // Return 401 status code for disallowed origins
-    }
-});
-
 // Middleware to log incoming requests
 app.use((req, res, next) => {
     const clientIp = req.ip;
