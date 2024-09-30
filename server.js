@@ -23,10 +23,19 @@ app.use((req, res, next) => {
     const origin = req.headers.origin;
     const referrer = req.get('referer') || '';
 
+    // Log the origin and referrer
+    console.log(`Incoming request from Origin: ${origin || 'undefined'}, Referrer: ${referrer}`);
+
     // If referer matches deepxhub.com, skip CORS check
     if (allowedRefererPattern.test(referrer)) {
         console.log(`Referer ${referrer} matched deepxhub.com. Skipping CORS check.`);
         return next(); // Skip CORS check and continue to the next middleware
+    }
+
+    // If origin is undefined, log an error and return 401
+    if (!origin) {
+        console.error(`CORS error: Incoming origin undefined not allowed.`);
+        return res.sendStatus(401); // Return 401 status code for disallowed origins
     }
 
     // Check if the incoming origin matches the allowed pattern or is in the allowedOrigins list
@@ -37,7 +46,7 @@ app.use((req, res, next) => {
         next();
     } else {
         console.error(`CORS error: Incoming origin ${origin} not allowed.`);
-        res.sendStatus(403); // Return 403 status code for disallowed origins
+        res.sendStatus(401); // Return 401 status code for disallowed origins
     }
 });
 
