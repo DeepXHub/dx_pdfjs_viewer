@@ -26,9 +26,9 @@ app.use((req, res, next) => {
     // Log the origin and referrer
     console.log(`Incoming request from Origin: ${origin || 'undefined'}, Referrer: ${referrer}`);
 
-    // If referer matches deepxhub.com, skip CORS check
+    // If referer matches allowed pattern, skip CORS check
     if (allowedRefererPattern.test(referrer)) {
-        console.log(`Referer ${referrer} matched deepxhub.com. Skipping CORS check.`);
+        console.log(`Referer ${referrer} matched allowed pattern. Skipping CORS check.`);
         return next(); // Skip CORS check and continue to the next middleware
     }
 
