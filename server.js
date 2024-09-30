@@ -34,8 +34,8 @@ app.use((req, res, next) => {
 
     // If origin is undefined, log an error and return 401
     if (!origin) {
-        console.error(`CORS error: Incoming origin undefined not allowed.`);
-        return res.sendStatus(401); // Return 401 status code for disallowed origins
+        console.error(`CORS error: Incoming origin undefined. Checking referer...`);
+        return res.sendStatus(401); // Return 401 status code for undefined origin
     }
 
     // Check if the incoming origin matches the allowed pattern or is in the allowedOrigins list
