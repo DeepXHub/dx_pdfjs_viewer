@@ -24,18 +24,19 @@ app.use((req, res, next) => {
     const referrer = req.get('referer') || '';
 
     // Log the origin and referrer
-    console.log(`Incoming request from Origin: ${origin || 'undefined'}, Referrer: ${referrer}`);
+    console.log(`[dx-pdfjs-viewer] Incoming request from Origin: ${origin || 'undefined'}, Referrer: ${referrer}`);
 
     // If referer matches allowed pattern, skip CORS check
     if (allowedRefererPattern.test(referrer)) {
-        console.log(`Referer ${referrer} matched allowed pattern. Skipping CORS check.`);
+        console.log(`[dx-pdfjs-viewer] Referer ${referrer} matched allowed pattern. Skipping CORS check.`);
+        res.setHeader("Access-Control-Allow-Origin", referrer); // Allow based on referer if origin is undefined
         return next(); // Skip CORS check and continue to the next middleware
     }
 
     // If origin is undefined, log an error and return 401
     if (!origin) {
-        console.error(`CORS error: Incoming origin undefined. Checking referer...`);
-        return res.sendStatus(401); // Return 401 status code for undefined origin
+        console.error(`[dx-pdfjs-viewer] CORS error: Incoming origin undefined. Referrer check failed.`);
+        return res.sendStatus(401); // Return 401 status code for undefined origin and no referer match
     }
 
     // Check if the incoming origin matches the allowed pattern or is in the allowedOrigins list
@@ -45,7 +46,7 @@ app.use((req, res, next) => {
         res.setHeader("Access-Control-Allow-Origin", origin);
         next();
     } else {
-        console.error(`CORS error: Incoming origin ${origin} not allowed.`);
+        console.error(`[dx-pdfjs-viewer] CORS error: Incoming origin ${origin} not allowed.`);
         res.sendStatus(401); // Return 401 status code for disallowed origins
     }
 });
